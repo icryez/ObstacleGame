@@ -49,6 +49,8 @@ func ListenForPlayerMovements() {
 		os.Stdin.Read(b)
 		if string(b) == " " && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
 			jump()
+		} else if string(b) == "d" || string(b) == "D" {
+			moveRight()
 		}
 	}
 }
@@ -56,9 +58,15 @@ func ListenForPlayerMovements() {
 func jump() {
 	for i := 0; i < 4; i++ {
 		time.Sleep(20 * time.Millisecond)
-		if player.PlayerPos[0] >= 0 && player.PlayerPos[0] < 29  {
+		if player.PlayerPos[0] >= 0 && player.PlayerPos[0] < 29 {
 			player.PlayerPos[0] = player.PlayerPos[0] - 1
 		}
+	}
+}
+
+func moveRight() {
+	if player.PlayerPos[1] >= 0 && player.PlayerPos[1] < 100 {
+		player.PlayerPos[1] = player.PlayerPos[1] + 1
 	}
 }
 
