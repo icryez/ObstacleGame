@@ -51,6 +51,8 @@ func ListenForPlayerMovements() {
 			jump()
 		} else if string(b) == "d" || string(b) == "D" {
 			moveRight()
+		} else if string(b) == "a" || string(b) == "A" {
+			moveLeft()
 		}
 	}
 }
@@ -61,6 +63,11 @@ func jump() {
 		if player.PlayerPos[0] >= 0 && player.PlayerPos[0] < 29 {
 			player.PlayerPos[0] = player.PlayerPos[0] - 1
 		}
+	}
+}
+func moveLeft() {
+	if player.PlayerPos[1] >= 0 && player.PlayerPos[1] < 100 {
+		player.PlayerPos[1] = player.PlayerPos[1] - 1
 	}
 }
 
