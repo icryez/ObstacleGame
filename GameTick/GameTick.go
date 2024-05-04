@@ -54,6 +54,7 @@ func ListenForPlayerMovements() {
 	defer f.Close()
 	b := make([]byte, 24)
 	for {
+		//TODO: Implement keyboard watcher layer instead of actiing on raw binary
 		f.Read(b)
 		var value int32
 		// typ := binary.LittleEndian.Uint16(b[16:18])
