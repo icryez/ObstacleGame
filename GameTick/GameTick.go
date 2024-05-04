@@ -1,6 +1,8 @@
 package gametick
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"os"
 	"os/exec"
@@ -44,14 +46,25 @@ func ListenForPlayerMovements() {
 	exec.Command("stty", "-F", "/dev/tty", "cbreak", "min", "1").Run()
 	// do not display entered characters on the screen
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
-	var b []byte = make([]byte, 1)
+	// var b []byte = make([]byte, 1)
+	f, err := os.Open("/dev/input/event6")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	b := make([]byte, 24)
 	for {
-		os.Stdin.Read(b)
-		if string(b) == " " && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
-			jump()
-		} else if string(b) == "d" || string(b) == "D" {
+		f.Read(b)
+		var value int32
+		// typ := binary.LittleEndian.Uint16(b[16:18])
+		code := binary.LittleEndian.Uint16(b[18:20])
+		binary.Read(bytes.NewReader(b[20:]), binary.LittleEndian, &value)
+		// fmt.Printf("type: %x\ncode: %d\nvalue: %d\n", typ, code, value)
+		if code == 57 && value == 1 && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
+			go jump()
+		} else if code == 32 && (value == 1 || value == 2) {
 			moveRight()
-		} else if string(b) == "a" || string(b) == "A" {
+		} else if code == 30 && (value == 1 || value == 2) {
 			moveLeft()
 		}
 	}
