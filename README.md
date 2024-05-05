@@ -1,6 +1,9 @@
 # Multiplayer Obstacle Game
 
 This repository contains a simple multiplayer obstacle game implemented in Go. Players can control a character to navigate through a dynamically generated map while avoiding obstacles and jumping over gaps.
+
+(Under Development)
+
 ![Screencast from 2024-05-05 21-11-59](https://github.com/icryez/ObstacleGame/assets/35337801/517f2e45-d504-482e-9a66-a8fee649e81b)
 
 
