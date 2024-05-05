@@ -15,8 +15,5 @@ func main() {
 	go gametick.Tick()
 	go gametick.StartGravity()
 	go gametick.ListenForPlayerMovements()
-	go gametick.ListenForPlayerMovements()
-	go gametick.ListenForPlayerMovements()
-	go gametick.ListenForPlayerMovements()
 	for {}
 }
