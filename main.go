@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"atomicgo.dev/cursor"
 	gametick "github.com/MultiplayerObsGame/GameTick"
 	player "github.com/MultiplayerObsGame/PlayerModule"
@@ -12,10 +14,11 @@ func main() {
 	cursor.Hide()
 	terminal.MoveCursor(0,0)
 	player.PlayerStart()
+	go gametick.ListenForPlayerMovements()
 	go gametick.Tick()
 	go gametick.StartGravity()
-	go gametick.ListenForPlayerMovements()
 	for gametick.EndGame == false{}
-	terminal.CallClear()
+	terminal.CallClearCmd()
 	cursor.Show()
+	time.Sleep(10*time.Millisecond)
 }

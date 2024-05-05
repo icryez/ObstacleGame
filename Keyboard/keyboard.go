@@ -60,7 +60,7 @@ func (k *KeyBoardState) updateKey(key string, flag bool) {
 	k.Keystates[key] = flag
 }
 
-func (k *KeyBoardState) getKey(key string) bool {
+func (k *KeyBoardState) GetKey(key string) bool {
 	k.Lock()
 	defer k.Unlock()
 	return k.Keystates[key]

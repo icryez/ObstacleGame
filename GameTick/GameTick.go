@@ -32,14 +32,16 @@ func Tick() {
 }
 
 func printStartScreen() {
-	terminal.MoveCursor(35, 10)
 	colors.BlueText.Println("Press A to move LEFT and D to move RIGHT")
 	colors.BlueText.Println("Guess what the JUMP key is?")
 	colors.BlueText.Println("Press ESC to END game")
 	colors.BlueText.Println("Press SPACE to start")
+	terminal.CallFlush()
 	for !GameStarted {
-		if keyboard.KeysState.Keystates["space"] {
+		if keyboard.KeysState.GetKey("space") {
 			GameStarted = true
+		} else if keyboard.KeysState.GetKey("Esc"){
+			EndGame = true
 		}
 	}
 }
@@ -70,17 +72,17 @@ func ListenForPlayerMovements() {
 	go keyboard.StartWatcher()
 	for EndGame == false {
 		time.Sleep(40 * time.Millisecond)
-		if keyboard.KeysState.Keystates["space"] && inair == false && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
+		if keyboard.KeysState.GetKey("space") && inair == false && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
 			inair = true
 			go jump()
 		}
-		if keyboard.KeysState.Keystates["D"] {
+		if keyboard.KeysState.GetKey("D") {
 			moveRight()
 		}
-		if keyboard.KeysState.Keystates["A"] {
+		if keyboard.KeysState.GetKey("A") {
 			moveLeft()
 		}
-		if keyboard.KeysState.Keystates["Esc"]{
+		if keyboard.KeysState.GetKey("Esc"){
 			EndGame = true
 		}
 	}
