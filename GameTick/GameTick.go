@@ -13,10 +13,12 @@ import (
 	"github.com/MultiplayerObsGame/terminal"
 )
 
+var inair bool
+
 func Tick() {
 	mapmodule.GenMap()
 	for {
-		time.Sleep(1* time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 		PrintMap()
 	}
 }
@@ -45,25 +47,29 @@ func ListenForPlayerMovements() {
 	// do not display entered characters on the screen
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 	go keyboard.StartWatcher()
-	for {	
-		time.Sleep(80 * time.Millisecond)
-		if keyboard.KeysState.Keystates["space"] && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
+	for {
+		time.Sleep(40 * time.Millisecond)
+		if keyboard.KeysState.Keystates["space"] && inair == false && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
+			inair = true
 			go jump()
-		} else if keyboard.KeysState.Keystates["D"] {
+		}
+		if keyboard.KeysState.Keystates["D"] {
 			moveRight()
-		} else if keyboard.KeysState.Keystates["A"] {
+		}
+		if keyboard.KeysState.Keystates["A"] {
 			moveLeft()
 		}
 	}
 }
 
 func jump() {
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 6; i++ {
 		time.Sleep(50 * time.Millisecond)
 		if player.PlayerPos[0] >= 0 && player.PlayerPos[0] < 29 {
 			player.PlayerPos[0] = player.PlayerPos[0] - 1
 		}
 	}
+	inair = false
 }
 func moveLeft() {
 	if player.PlayerPos[1] >= 0 && player.PlayerPos[1] < 100 {
@@ -85,7 +91,8 @@ func StartGravity() {
 	for {
 		time.Sleep(80 * time.Millisecond)
 		if player.PlayerPos[0] < 28 &&
-			structs.VisibleMatrix[player.PlayerPos[0]][player.PlayerPos[1]].IsVisible == false {
+			structs.VisibleMatrix[player.PlayerPos[0]][player.PlayerPos[1]].IsVisible == false &&
+			inair == false {
 			player.PlayerPos[0] += 1
 		}
 	}
