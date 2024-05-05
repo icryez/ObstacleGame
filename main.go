@@ -16,4 +16,5 @@ func main() {
 	go gametick.StartGravity()
 	go gametick.ListenForPlayerMovements()
 	for {}
+	//TODO: handle exit game
 }
