@@ -14,12 +14,33 @@ import (
 )
 
 var inair bool
+var GameStarted bool
+var EndGame bool
 
 func Tick() {
 	mapmodule.GenMap()
-	for {
-		time.Sleep(10 * time.Millisecond)
-		PrintMap()
+	if !GameStarted {
+		printStartScreen()
+	}
+	terminal.CallClear()
+	if GameStarted {
+		for EndGame == false {
+			time.Sleep(10 * time.Millisecond)
+			PrintMap()
+		}
+	}
+}
+
+func printStartScreen() {
+	terminal.MoveCursor(35, 10)
+	colors.BlueText.Println("Press A to move LEFT and D to move RIGHT")
+	colors.BlueText.Println("Guess what the JUMP key is?")
+	colors.BlueText.Println("Press ESC to END game")
+	colors.BlueText.Println("Press SPACE to start")
+	for !GameStarted {
+		if keyboard.KeysState.Keystates["space"] {
+			GameStarted = true
+		}
 	}
 }
 
@@ -47,7 +68,7 @@ func ListenForPlayerMovements() {
 	// do not display entered characters on the screen
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 	go keyboard.StartWatcher()
-	for {
+	for EndGame == false {
 		time.Sleep(40 * time.Millisecond)
 		if keyboard.KeysState.Keystates["space"] && inair == false && structs.VisibleMatrix[player.PlayerPos[0]+1][player.PlayerPos[1]].IsVisible {
 			inair = true
@@ -58,6 +79,9 @@ func ListenForPlayerMovements() {
 		}
 		if keyboard.KeysState.Keystates["A"] {
 			moveLeft()
+		}
+		if keyboard.KeysState.Keystates["Esc"]{
+			EndGame = true
 		}
 	}
 }

@@ -23,6 +23,7 @@ func createKeyBoardState() *KeyBoardState {
 func StartWatcher() {
 	// KeysState.Keystates = make(map[string]bool)
 	KeysState = *createKeyBoardState()
+
 	f, err := os.Open("/dev/input/event6") //TODO: make this dynamic
 	if err != nil {
 		panic(err)
@@ -47,6 +48,8 @@ func StartWatcher() {
 			KeysState.updateKey("D", true)
 		} else if code == 32 && value == 0 {
 			KeysState.updateKey("D", false)
+		} else if code == 1 && value == 1 {
+			KeysState.updateKey("Esc", true)
 		}
 	}
 }

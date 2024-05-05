@@ -15,6 +15,7 @@ func main() {
 	go gametick.Tick()
 	go gametick.StartGravity()
 	go gametick.ListenForPlayerMovements()
-	for {}
-	//TODO: handle exit game
+	for gametick.EndGame == false{}
+	terminal.CallClear()
+	cursor.Show()
 }
