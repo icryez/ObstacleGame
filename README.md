@@ -14,7 +14,7 @@ To install and run the game, follow these steps:
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/MultiplayerObsGame/ObstacleGame.git
+    git clone https://github.com/icryez/ObstacleGame.git
     ```
 
 2. Navigate to the project directory:
