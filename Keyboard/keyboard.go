@@ -23,7 +23,7 @@ func createKeyBoardState() *KeyBoardState {
 func StartWatcher() {
 	// KeysState.Keystates = make(map[string]bool)
 	KeysState = *createKeyBoardState()
-	f, err := os.Open("/dev/input/event6")
+	f, err := os.Open("/dev/input/event6") //TODO: make this dynamic
 	if err != nil {
 		panic(err)
 	}
