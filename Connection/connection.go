@@ -18,7 +18,7 @@ func ConnectToServer(){
 	for gametick.EndGame == false {
 		time.Sleep(1000*time.Millisecond)
 		//TODO: better implementation
-		str := fmt.Sprint(player.PlayerPos[0], player.PlayerPos[1])
+		str := fmt.Sprint("098765",player.PlayerPos[0], player.PlayerPos[1])
 
 		conn.Write([]byte(str))
 	}
