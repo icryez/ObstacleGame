@@ -30,12 +30,12 @@ func ConnectToServer() {
 func readLoop(conn net.Conn){
 	buf := make([]byte,2048)
 	for {
-		_,err := conn.Read(buf)
+		n,err := conn.Read(buf)
 		if err != nil {
 			fmt.Print("Read loop error")
 			break
 		}
-		
+		fmt.Println(string(buf[:n]))
 		i,err := strconv.Atoi(strings.TrimSpace(string(buf)[0:1]))
 		j,err:= strconv.Atoi(strings.TrimSpace(string(buf)[3:4]))
 		fmt.Println(i,j)
