@@ -3,6 +3,8 @@ package connection
 import (
 	"fmt"
 	"net"
+	"time"
+
 	player "github.com/MultiplayerObsGame/PlayerModule"
 )
 
@@ -14,19 +16,22 @@ func ConnectToServer() {
 	} else {
 		fmt.Println("Connected to :",conn.RemoteAddr())
 	}
-	buf := make([]byte, 2048)
+	go readLoop(conn)
 	for{
+		time.Sleep(100 * time.Millisecond)
 		//TODO: better implementation
 		str := fmt.Sprint("098765", player.PlayerPos[0], player.PlayerPos[1])
-		fmt.Println(str)
-		conn.Write([]byte("sdfsfs"))
-		n, err := conn.Read(buf)
-		if err != nil {
-			fmt.Printf("Read Loop Error - disconnected from %s : %s", conn.RemoteAddr(), err)
-			break
-		}
-		readStr := string(buf[:n])
-		fmt.Println(readStr)
+		conn.Write([]byte(str))
 	}
 }
 
+func readLoop(conn net.Conn){
+	buf := make([]byte,2048)
+	for {
+		n,err := conn.Read(buf)
+		if err != nil {
+			fmt.Print("Read loop error")
+		}
+		fmt.Println(string(buf[:n]))
+	}
+}
