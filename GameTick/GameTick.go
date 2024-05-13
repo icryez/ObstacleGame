@@ -50,7 +50,7 @@ func PrintMap() {
 	terminal.MoveCursor(0, 0)
 	for r := range structs.VisibleMatrix {
 		for c, val := range structs.VisibleMatrix[r] {
-			if player.PlayerPos == [2]int{r, c} {
+			if player.PlayerPos == [2]int{r, c} || player.Player2Pos == [2]int{r,c} {
 				colors.Red.Print(" ")
 			} else if val.IsFloor {
 				colors.Yellow.Print(" ")

@@ -3,6 +3,8 @@ package connection
 import (
 	"fmt"
 	"net"
+	"strconv"
+	"strings"
 	"time"
 
 	player "github.com/MultiplayerObsGame/PlayerModule"
@@ -28,10 +30,14 @@ func ConnectToServer() {
 func readLoop(conn net.Conn){
 	buf := make([]byte,2048)
 	for {
-		n,err := conn.Read(buf)
+		_,err := conn.Read(buf)
 		if err != nil {
 			fmt.Print("Read loop error")
+			break
 		}
-		fmt.Println(string(buf[:n]))
+		
+		i,err := strconv.Atoi(strings.TrimSpace(string(buf)[0:1]))
+		j,err:= strconv.Atoi(strings.TrimSpace(string(buf)[3:4]))
+		player.Player2Pos = [2]int{i,j}
 	}
 }

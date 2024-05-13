@@ -6,6 +6,8 @@ import (
 
 var PlayerPos [2]int
 
+var Player2Pos [2]int
+
 type PlayerCoords struct {
 	sync.Mutex
 	m map[[2]int]bool
