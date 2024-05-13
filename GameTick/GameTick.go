@@ -25,7 +25,7 @@ func Tick() {
 	terminal.CallClear()
 	if GameStarted {
 		for EndGame == false {
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(1000* time.Millisecond)
 			PrintMap()
 		}
 	}

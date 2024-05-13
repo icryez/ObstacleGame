@@ -3,23 +3,30 @@ package connection
 import (
 	"fmt"
 	"net"
-	"time"
-
-	gametick "github.com/MultiplayerObsGame/GameTick"
 	player "github.com/MultiplayerObsGame/PlayerModule"
 )
 
-func ConnectToServer(){
+func ConnectToServer() {
 	conn, err := net.Dial("tcp", "localhost:3000")
 	defer conn.Close()
-	if err!=nil {
+	if err != nil {
 		fmt.Println("Error while connecting to server :", err)
+	} else {
+		fmt.Println("Connected to :",conn.RemoteAddr())
 	}
-	for gametick.EndGame == false {
-		time.Sleep(1000*time.Millisecond)
+	buf := make([]byte, 2048)
+	for{
 		//TODO: better implementation
-		str := fmt.Sprint("098765",player.PlayerPos[0], player.PlayerPos[1])
-
-		conn.Write([]byte(str))
+		str := fmt.Sprint("098765", player.PlayerPos[0], player.PlayerPos[1])
+		fmt.Println(str)
+		conn.Write([]byte("sdfsfs"))
+		n, err := conn.Read(buf)
+		if err != nil {
+			fmt.Printf("Read Loop Error - disconnected from %s : %s", conn.RemoteAddr(), err)
+			break
+		}
+		readStr := string(buf[:n])
+		fmt.Println(readStr)
 	}
 }
+

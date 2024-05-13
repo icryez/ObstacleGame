@@ -24,7 +24,7 @@ func StartWatcher() {
 	// KeysState.Keystates = make(map[string]bool)
 	KeysState = *createKeyBoardState()
 
-	f, err := os.Open("/dev/input/event8") //TODO: make this dynamic
+	f, err := os.Open("/dev/input/event16") //TODO: make this dynamic
 	if err != nil {
 		panic(err)
 	}
