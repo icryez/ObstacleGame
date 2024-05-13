@@ -6,6 +6,11 @@ This repository contains a simple multiplayer obstacle game implemented in Go. P
 
 ![Screencast from 2024-05-05 21-11-59](https://github.com/icryez/ObstacleGame/assets/35337801/517f2e45-d504-482e-9a66-a8fee649e81b)
 
+MultiPlayer Mode :
+
+![Screencast from 2024-05-14 01-26-15](https://github.com/icryez/ObstacleGame/assets/35337801/36b4786c-cd55-48dc-97da-7bf655f17c1f)
+
+
 
 ## Installation
 
