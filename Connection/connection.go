@@ -22,7 +22,9 @@ func ConnectToServer() {
 	for{
 		time.Sleep(100 * time.Millisecond)
 		//TODO: better implementation
-		str := fmt.Sprint("098765", player.PlayerPos[0], player.PlayerPos[1])
+		str := fmt.Sprint("098765", 
+			integerToStringOfFixedWidth(player.PlayerPos[0],2),
+			integerToStringOfFixedWidth(player.PlayerPos[1],2))
 		conn.Write([]byte(str))
 	}
 }
@@ -42,3 +44,13 @@ func readLoop(conn net.Conn){
 		player.Player2Pos = [2]int{i,j}
 	}
 }
+
+func integerToStringOfFixedWidth(n, w int) string {
+    s := fmt.Sprintf(fmt.Sprintf("%%0%dd", w), n)
+    l := len(s)
+    if l > w {
+        return s[l-w:]
+    }
+    return s
+}
+
