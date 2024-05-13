@@ -32,13 +32,15 @@ func ConnectToServer() {
 func readLoop(conn net.Conn){
 	buf := make([]byte,2048)
 	for {
-		_,err := conn.Read(buf)
+		n,err := conn.Read(buf)
 		if err != nil {
 			fmt.Print("Read loop error")
 			break
 		}
+		fmt.Println(string(buf[:n]))
 		i,err := strconv.Atoi(strings.TrimSpace(string(buf)[0:2]))
-		j,err:= strconv.Atoi(strings.TrimSpace(string(buf)[3:]))
+		j,err:= strconv.Atoi(strings.TrimSpace(string(buf)[2:]))
+		fmt.Println(i,j)
 		player.Player2Pos = [2]int{i,j}
 	}
 }
