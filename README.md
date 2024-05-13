@@ -30,10 +30,9 @@ To install and run the game, follow these steps:
     ```
 
 ## Features
-
+- Multiplayer support: The game architecture is designed to support multiple players simultaneously. Game can connect to a server using tcp and reads/writes data. Server Repo - https://github.com/icryez/MultiGameServer
 - Dynamic map generation: The game generates a new map layout every time it is run. --To Be Implemented
 - Player control: Use the 'A' and 'D' keys to move left and right, respectively. Press 'space' to jump.
-- Multiplayer support: The game architecture is designed to support multiple players simultaneously, although the current implementation focuses on single-player functionality. -- To Be implemented
 - Gravity simulation: The player character is subject to gravity, causing it to fall when not supported by solid ground.
 - Obstacle avoidance: Navigate around obstacles and jump over gaps to progress through the map.
 
@@ -56,4 +55,4 @@ The codebase is organized into several packages:
 - **keyboard**: Deals with keyboard input handling.
 - **mapmodule**: Responsible for generating the game map.
 - **structs**: Defines various data structures used throughout the game.
-
+- **connection**: Connects to a server using tcp and reads/writes data.
