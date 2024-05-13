@@ -38,6 +38,7 @@ func readLoop(conn net.Conn){
 		
 		i,err := strconv.Atoi(strings.TrimSpace(string(buf)[0:1]))
 		j,err:= strconv.Atoi(strings.TrimSpace(string(buf)[3:4]))
+		fmt.Println(i,j)
 		player.Player2Pos = [2]int{i,j}
 	}
 }
