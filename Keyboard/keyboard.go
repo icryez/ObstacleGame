@@ -14,7 +14,7 @@ type KeyBoardState struct {
 
 var KeysState KeyBoardState
 
-func createKeyBoardState() *KeyBoardState {
+func CreateKeyBoardState() *KeyBoardState {
 	kbs := new(KeyBoardState)
 	kbs.Keystates = map[string]bool{}
 	return kbs
@@ -22,9 +22,9 @@ func createKeyBoardState() *KeyBoardState {
 
 func StartWatcher() {
 	// KeysState.Keystates = make(map[string]bool)
-	KeysState = *createKeyBoardState()
+	// KeysState = *createKeyBoardState()
 
-	f, err := os.Open("/dev/input/event16") //TODO: make this dynamic
+	f, err := os.Open("/dev/input/event17") //TODO: make this dynamic
 	if err != nil {
 		panic(err)
 	}
@@ -36,6 +36,7 @@ func StartWatcher() {
 		// typ := binary.LittleEndian.Uint16(b[16:18])
 		code := binary.LittleEndian.Uint16(b[18:20])
 		binary.Read(bytes.NewReader(b[20:]), binary.LittleEndian, &value)
+		//TODO:use switch case??
 		if code == 57 && value == 1 {
 			KeysState.updateKey("space", true)
 		} else if code == 57 && value == 0 {
