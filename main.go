@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"atomicgo.dev/cursor"
+	connection "github.com/MultiplayerObsGame/Connection"
 	gametick "github.com/MultiplayerObsGame/GameTick"
 	keyboard "github.com/MultiplayerObsGame/Keyboard"
 	player "github.com/MultiplayerObsGame/PlayerModule"
@@ -19,7 +20,7 @@ func main() {
 	go gametick.ListenForPlayerMovements()
 	go gametick.Tick()
 	go gametick.StartGravity()
-	// go connection.ConnectToServer()
+	go connection.ConnectToServer()
 	for gametick.EndGame == false{}
 	terminal.CallClearCmd()
 	cursor.Show()
