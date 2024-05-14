@@ -2,7 +2,9 @@ package gametick
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"syscall"
 	"time"
 
 	colors "github.com/MultiplayerObsGame/Colours"
@@ -16,6 +18,10 @@ import (
 var inair bool
 var GameStarted bool
 var EndGame bool
+var connectedToServer bool
+var sessionId string
+var listeningForInput bool
+var printSessionScreen bool
 
 func Tick() {
 	mapmodule.GenMap()
@@ -23,9 +29,12 @@ func Tick() {
 		printStartScreen()
 	}
 	terminal.CallClear()
+	if printSessionScreen {
+		printSessionInputScreen()
+	}
 	if GameStarted {
 		for EndGame == false {
-			time.Sleep(1* time.Millisecond)
+			time.Sleep(1 * time.Millisecond)
 			PrintMap()
 		}
 	}
@@ -36,12 +45,36 @@ func printStartScreen() {
 	colors.BlueText.Println("Guess what the JUMP key is?")
 	colors.BlueText.Println("Press ESC to END game")
 	colors.BlueText.Println("Press SPACE to start")
-	terminal.CallFlush()
-	for !GameStarted {
+	if connectedToServer {
+		colors.BlueText.Println("Connected to Server with SessionID:", sessionId)
+	} else {
+		colors.BlueText.Println("Not connected to server, Press C to enter sessionID")
+	}
+	listeningForInput = true
+	for listeningForInput {
 		if keyboard.KeysState.GetKey("space") {
+			listeningForInput = false
 			GameStarted = true
-		} else if keyboard.KeysState.GetKey("Esc"){
+		} else if keyboard.KeysState.GetKey("Esc") {
+			listeningForInput = false
 			EndGame = true
+		} else if keyboard.KeysState.GetKey("C") {
+			listeningForInput = false
+			printSessionScreen = true
+		}
+	}
+}
+
+func printSessionInputScreen() {
+	os.Stdin = os.NewFile(uintptr(syscall.Stdin), "/dev/stdin")
+	colors.BlueText.Print("Enter Session ID: ")
+	var b []byte = make([]byte, 1)
+	for {
+		os.Stdin.Read(b)
+		if string(b) != "\n" {
+			fmt.Print(string(b))
+		} else {
+			break
 		}
 	}
 }
@@ -50,7 +83,7 @@ func PrintMap() {
 	terminal.MoveCursor(0, 0)
 	for r := range structs.VisibleMatrix {
 		for c, val := range structs.VisibleMatrix[r] {
-			if player.PlayerPos == [2]int{r, c} || player.Player2Pos == [2]int{r,c} {
+			if player.PlayerPos == [2]int{r, c} || player.Player2Pos == [2]int{r, c} {
 				colors.Red.Print(" ")
 			} else if val.IsFloor {
 				colors.Yellow.Print(" ")
@@ -82,7 +115,7 @@ func ListenForPlayerMovements() {
 		if keyboard.KeysState.GetKey("A") {
 			moveLeft()
 		}
-		if keyboard.KeysState.GetKey("Esc"){
+		if keyboard.KeysState.GetKey("Esc") {
 			EndGame = true
 		}
 	}
