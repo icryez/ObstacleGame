@@ -34,6 +34,7 @@ func Tick() {
 		printSessionInputScreen()
 	}
 	if GameStarted {
+		terminal.CallClearCmd()
 		for EndGame == false {
 			time.Sleep(1 * time.Millisecond)
 			PrintMap()
