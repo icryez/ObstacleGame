@@ -5,6 +5,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"time"
 	player "github.com/MultiplayerObsGame/PlayerModule"
 )
 
@@ -16,6 +17,7 @@ func ConnectToServer(sessionId string) {
 		defer conn.Close()
 		go readLoop(conn)
 		for {
+			time.Sleep(10 * time.Millisecond)
 			//TODO: better implementation
 			str := fmt.Sprint(sessionId,
 				integerToStringOfFixedWidth(player.PlayerPos[0], 2),
