@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"atomicgo.dev/cursor"
+	colors "github.com/MultiplayerObsGame/Colours"
 	gametick "github.com/MultiplayerObsGame/GameTick"
 	keyboard "github.com/MultiplayerObsGame/Keyboard"
 	player "github.com/MultiplayerObsGame/PlayerModule"
@@ -22,6 +23,7 @@ func main() {
 	// go connection.ConnectToServer()
 	for gametick.EndGame == false{}
 	terminal.CallClearCmd()
+	colors.BlueText.Println("Esc Pressed - exiting game")
 	cursor.Show()
 	time.Sleep(10*time.Millisecond)
 }

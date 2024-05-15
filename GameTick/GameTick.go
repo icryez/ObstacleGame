@@ -1,11 +1,15 @@
 package gametick
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
 
 	colors "github.com/MultiplayerObsGame/Colours"
+	connection "github.com/MultiplayerObsGame/Connection"
 	keyboard "github.com/MultiplayerObsGame/Keyboard"
 	mapmodule "github.com/MultiplayerObsGame/MapModule"
 	player "github.com/MultiplayerObsGame/PlayerModule"
@@ -16,16 +20,23 @@ import (
 var inair bool
 var GameStarted bool
 var EndGame bool
+var connectedToServer bool
+var sessionId string = ""
+var listeningForInput bool
+var printSessionScreen bool
 
 func Tick() {
 	mapmodule.GenMap()
 	if !GameStarted {
 		printStartScreen()
 	}
-	terminal.CallClear()
+	if printSessionScreen {
+		printSessionInputScreen()
+	}
 	if GameStarted {
+		terminal.CallClearCmd()
 		for EndGame == false {
-			time.Sleep(1* time.Millisecond)
+			time.Sleep(1 * time.Millisecond)
 			PrintMap()
 		}
 	}
@@ -36,12 +47,47 @@ func printStartScreen() {
 	colors.BlueText.Println("Guess what the JUMP key is?")
 	colors.BlueText.Println("Press ESC to END game")
 	colors.BlueText.Println("Press SPACE to start")
-	terminal.CallFlush()
-	for !GameStarted {
+	if connectedToServer {
+		colors.BlueText.Println("Connected to Server with SessionID:", sessionId) //TODO: prints this even if connection failed - fix this
+	} else {
+		colors.BlueText.Println("Not connected to server, Press C to enter sessionID")
+	}
+	for {
 		if keyboard.KeysState.GetKey("space") {
 			GameStarted = true
-		} else if keyboard.KeysState.GetKey("Esc"){
+			break
+		} else if keyboard.KeysState.GetKey("Esc") {
 			EndGame = true
+			break
+		} else if keyboard.KeysState.GetKey("C") && printSessionScreen == false {
+			printSessionScreen = true
+			break
+		}
+	}
+}
+
+func printSessionInputScreen() {
+	colors.BlueText.Print("Enter Session ID (Length of 6) : ") //TODO: implement length check
+	var b []byte = make([]byte, 1)
+	buf := bufio.NewReader(os.Stdin)
+	var flag bool
+	var buffer bytes.Buffer
+	for {
+		buf.Read(b)
+		if string(b) != "\n" {
+			if flag {
+				buffer.WriteString(string(b))
+				fmt.Print(string(b))
+			} else if string(b) == "c" || string(b) == "C" && flag == false {
+				flag = true
+			}
+		} else {
+			sessionId = buffer.String()
+			terminal.CallClearCmd()
+			go connection.ConnectToServer(sessionId)
+			connectedToServer = true //TODO: check if connection was successful then make this true
+			printStartScreen()
+			break
 		}
 	}
 }
@@ -50,7 +96,7 @@ func PrintMap() {
 	terminal.MoveCursor(0, 0)
 	for r := range structs.VisibleMatrix {
 		for c, val := range structs.VisibleMatrix[r] {
-			if player.PlayerPos == [2]int{r, c} || player.Player2Pos == [2]int{r,c} {
+			if player.PlayerPos == [2]int{r, c} || player.Player2Pos == [2]int{r, c} {
 				colors.Red.Print(" ")
 			} else if val.IsFloor {
 				colors.Yellow.Print(" ")
@@ -82,7 +128,7 @@ func ListenForPlayerMovements() {
 		if keyboard.KeysState.GetKey("A") {
 			moveLeft()
 		}
-		if keyboard.KeysState.GetKey("Esc"){
+		if keyboard.KeysState.GetKey("Esc") {
 			EndGame = true
 		}
 	}
