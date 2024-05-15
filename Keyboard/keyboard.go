@@ -102,7 +102,9 @@ func StartWatcher() {
 				} else if code == 1 && value == 1 {
 					KeysState.updateKey("Esc", true)
 				} else if code == 46 && value == 1 {
-					KeysState.updateKey("C",true)
+					KeysState.updateKey("C", true)
+				} else if code == 46 && value == 0 {
+					KeysState.updateKey("C", false)
 				}
 			}
 		}(v)

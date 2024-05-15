@@ -1,13 +1,15 @@
 package gametick
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
-	"syscall"
 	"time"
 
 	colors "github.com/MultiplayerObsGame/Colours"
+	connection "github.com/MultiplayerObsGame/Connection"
 	keyboard "github.com/MultiplayerObsGame/Keyboard"
 	mapmodule "github.com/MultiplayerObsGame/MapModule"
 	player "github.com/MultiplayerObsGame/PlayerModule"
@@ -19,7 +21,7 @@ var inair bool
 var GameStarted bool
 var EndGame bool
 var connectedToServer bool
-var sessionId string
+var sessionId string = ""
 var listeningForInput bool
 var printSessionScreen bool
 
@@ -28,7 +30,6 @@ func Tick() {
 	if !GameStarted {
 		printStartScreen()
 	}
-	terminal.CallClear()
 	if printSessionScreen {
 		printSessionInputScreen()
 	}
@@ -46,34 +47,45 @@ func printStartScreen() {
 	colors.BlueText.Println("Press ESC to END game")
 	colors.BlueText.Println("Press SPACE to start")
 	if connectedToServer {
-		colors.BlueText.Println("Connected to Server with SessionID:", sessionId)
+		colors.BlueText.Println("Connected to Server with SessionID:", sessionId) //TODO: prints this even if connection failed - fix this
 	} else {
 		colors.BlueText.Println("Not connected to server, Press C to enter sessionID")
 	}
-	listeningForInput = true
-	for listeningForInput {
+	for {
 		if keyboard.KeysState.GetKey("space") {
-			listeningForInput = false
 			GameStarted = true
+			break
 		} else if keyboard.KeysState.GetKey("Esc") {
-			listeningForInput = false
 			EndGame = true
-		} else if keyboard.KeysState.GetKey("C") {
-			listeningForInput = false
+			break
+		} else if keyboard.KeysState.GetKey("C") && printSessionScreen == false {
 			printSessionScreen = true
+			break
 		}
 	}
 }
 
 func printSessionInputScreen() {
-	os.Stdin = os.NewFile(uintptr(syscall.Stdin), "/dev/stdin")
-	colors.BlueText.Print("Enter Session ID: ")
+	colors.BlueText.Print("Enter Session ID (Length of 6) : ") //TODO: implement length check
 	var b []byte = make([]byte, 1)
+	buf := bufio.NewReader(os.Stdin)
+	var flag bool
+	var buffer bytes.Buffer
 	for {
-		os.Stdin.Read(b)
+		buf.Read(b)
 		if string(b) != "\n" {
-			fmt.Print(string(b))
+			if flag {
+				buffer.WriteString(string(b))
+				fmt.Print(string(b))
+			} else if string(b) == "c" || string(b) == "C" && flag == false {
+				flag = true
+			}
 		} else {
+			sessionId = buffer.String()
+			terminal.CallClearCmd()
+			go connection.ConnectToServer(sessionId)
+			connectedToServer = true //TODO: check if connection was successful then make this true
+			printStartScreen()
 			break
 		}
 	}
